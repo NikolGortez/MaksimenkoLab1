@@ -56,3 +56,58 @@ erDiagram
 ## Выбранная сущность
 
 Выбрана независимая сущность `product` "Продукт"
+
+## Полная диаграмма классов
+
+```mermaid
+classDiagram
+direction BT
+class AbstractProduct {
+  + AbstractProduct() 
+  + equals(Object?) Boolean
+  + hashCode() Int
+}
+class Companion {
+  + fromJson(String) ProductModel
+}
+class MainKt {
+  + main() Unit
+}
+class Product {
+<<Interface>>
+   Int id
+}
+class ProductModelTest {
+  + ProductModelTest() 
+  + testEquality() Unit
+  + testJson() Unit
+}
+class data  ProductModel {
+  + ProductModel(Int, String, String, Double, Int, Int) 
+  - requirePositive(Int, String) Unit
+  - requireNotBlank(String, String) Unit
+   String name
+   String description
+   Int id
+   Int stockBalance
+   Double price
+   Int reserveBalance
+}
+class data  ProductView {
+  + ProductView(Int, String, Double) 
+   String name
+   Double price
+   Int id
+}
+
+AbstractProduct  ..>  Product 
+data  ProductModel  -->  Companion 
+MainKt  ..>  data  ProductModel : «создаёт»
+MainKt  ..>  data  ProductView : «создаёт»
+ProductModelTest  ..>  data  ProductModel : «создаёт»
+ProductModelTest  ..>  data  ProductView : «создаёт»
+data  ProductModel  -->  AbstractProduct 
+data  ProductModel  ..>  AbstractProduct : «создаёт»
+data  ProductView  -->  AbstractProduct 
+data  ProductView  ..>  AbstractProduct : «создаёт»
+```
