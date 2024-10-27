@@ -1,5 +1,9 @@
 package voidpointer.mc.tests
 
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
+
+@Serializable
 data class Product(
     val id : Int,
     val name : String,
@@ -9,7 +13,6 @@ data class Product(
     val reserveBalance : Int,
     val categoryId : Int
 ) {
-
     /**
      * В целях читаемости кода валидация сделана через проверку полей в единственном конструкторе
      * класса.
@@ -41,5 +44,11 @@ data class Product(
 
     private fun requireNotBlank(fieldValue: String, fieldName: String) {
         require(fieldValue.isNotBlank()) { "$fieldName must not be blank." }
+    }
+
+    companion object {
+        fun fromJson(json: String): Product {
+            return Json.decodeFromString<Product>(json)
+        }
     }
 }

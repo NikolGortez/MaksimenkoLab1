@@ -1,10 +1,10 @@
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '2.0.20'
+    id 'org.jetbrains.kotlin.jvm' version '2.0.21'
     id 'org.jetbrains.kotlin.plugin.serialization' version '2.0.21'
 }
 
-group = 'voidpointer.mc.tests'
-version = '1.0-SNAPSHOT'
+group = 'tests'
+version = '1.0.0'
 
 repositories {
     mavenCentral()
