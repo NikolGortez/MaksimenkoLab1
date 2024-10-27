@@ -5,13 +5,13 @@ import kotlinx.serialization.json.Json
 
 @Serializable
 data class ProductModel(
-    val id: Int,
+    override val id: Int,
     val name: String,
     val description: String,
     val price: Double,
     val stockBalance: Int,
     val reserveBalance: Int,
-) {
+) : AbstractProduct() {
 
     companion object {
         fun fromJson(json: String): ProductModel {
@@ -52,13 +52,10 @@ data class ProductModel(
     }
 
     override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other is ProductModel) return id == other.id
-        if (other is ProductView) return id == other.id
-        return false
+        return super.equals(other)
     }
 
     override fun hashCode(): Int {
-        return id
+        return AbstractProduct.hashCode()
     }
 }

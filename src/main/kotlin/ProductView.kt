@@ -1,15 +1,12 @@
 package voidpointer.mc.tests
 
-data class ProductView(val id: Int, val name: String, val price: Double) {
+data class ProductView(override val id: Int, val name: String, val price: Double) : AbstractProduct() {
 
     override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other is ProductModel) return id == other.id
-        if (other is ProductView) return id == other.id
-        return false
+        return super.equals(other)
     }
 
     override fun hashCode(): Int {
-        return id
+        return AbstractProduct.hashCode()
     }
 }
