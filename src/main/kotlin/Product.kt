@@ -25,12 +25,21 @@ data class Product(
      * ```
      */
     init {
-        require(id >= 0) { "Id must be positive." }
-        require(name.isNotBlank()) { "Name must not be blank." }
-        require(description.isNotBlank()) { "Description must not be blank." }
+        /* сказано убрать повтор кода - повтор кода убрала, хоть это здесь и нерационально */
+        requirePositive(id, "Id")
+        requireNotBlank(name, "Name")
+        requireNotBlank(description, "Description")
         require(price > 0 && price.isFinite()) { "Price must be finite and greater than zero." }
-        require(stockBalance >= 0) { "Stock balance must be positive." }
-        require(reserveBalance >= 0) { "Reserve balance must be positive." }
-        require(categoryId >= 0) { "Category id must be positive." }
+        requirePositive(stockBalance, "Stock balance")
+        requirePositive(reserveBalance, "Reserve balance")
+        requirePositive(categoryId, "Category id")
+    }
+
+    private fun requirePositive(int: Int, fieldName: String) {
+        require(int >= 0) { "$fieldName must be positive." }
+    }
+
+    private fun requireNotBlank(fieldValue: String, fieldName: String) {
+        require(fieldValue.isNotBlank()) { "$fieldName must not be blank." }
     }
 }
