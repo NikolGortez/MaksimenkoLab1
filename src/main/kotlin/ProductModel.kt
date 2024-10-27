@@ -43,15 +43,22 @@ data class ProductModel(
         requirePositive(reserveBalance, "Reserve balance")
     }
 
-    fun toStringShort(): String {
-        return "ProductModel(id:$id, name:$name, price:$price)"
-    }
-
     private fun requirePositive(int: Int, fieldName: String) {
         require(int >= 0) { "$fieldName must be positive." }
     }
 
     private fun requireNotBlank(fieldValue: String, fieldName: String) {
         require(fieldValue.isNotBlank()) { "$fieldName must not be blank." }
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other is ProductModel) return id == other.id
+        if (other is ProductView) return id == other.id
+        return false
+    }
+
+    override fun hashCode(): Int {
+        return id
     }
 }
