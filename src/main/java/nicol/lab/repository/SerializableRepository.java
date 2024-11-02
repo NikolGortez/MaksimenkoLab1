@@ -16,7 +16,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
-public abstract class SerializableRepository {
+public abstract class SerializableRepository implements ProductRepository {
     protected final AtomicInteger idCounter = new AtomicInteger(0);
     protected final List<Product> products = new ArrayList<>();
 
@@ -46,7 +46,8 @@ public abstract class SerializableRepository {
         return products;
     }
 
-    public final Optional<Product> findProductById(int id) {
+    @Override
+    public final Optional<Product> findById(int id) {
         /* фильтр списка по id */
         return products.stream().filter(product -> product.id() == id).findAny();
     }
@@ -66,7 +67,7 @@ public abstract class SerializableRepository {
         return products;
     }
 
-    public final Product addAndGenerateId(Product product) {
+    public final int addAndGenerateId(Product product) {
         /* скопировать объект продукта со сгенерированным id */
         /* добавить его в список и вернуть */
         Product productWithId = new Product(
@@ -78,10 +79,10 @@ public abstract class SerializableRepository {
                 product.reserveBalance()
         );
         products.add(productWithId);
-        return productWithId;
+        return productWithId.id();
     }
 
-    public final boolean replaceById(Product product) {
+    public final boolean replace(Product product) {
         /* найти продукт с совпадающим id и заменить его */
         /* вернуть true, если найден и заменён или false в противном случае */
         ListIterator<Product> iterator = products.listIterator();
@@ -94,18 +95,18 @@ public abstract class SerializableRepository {
         return false;
     }
 
-    public final Optional<Product> removeById(int id) {
+    public final boolean remove(Product product) {
         /* найти продукт с совпадающим id и удалить его */
         /* вернуть Optional с продуктом или пустой, если не найден */
         ListIterator<Product> iterator = products.listIterator();
         while (iterator.hasNext()) {
             Product nextProduct = iterator.next();
-            if (nextProduct.id() == id) {
+            if (nextProduct.id() == product.id()) {
                 iterator.remove();
-                return Optional.of(nextProduct);
+                return true;
             }
         }
-        return Optional.empty();
+        return false;
     }
 
     public final int get_count() {

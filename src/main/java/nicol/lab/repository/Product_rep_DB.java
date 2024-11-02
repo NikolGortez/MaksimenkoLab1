@@ -11,10 +11,6 @@ import java.util.Optional;
 public final class Product_rep_DB {
     private final ProductDao productDao;
 
-    public static void main(String[] args) throws SQLException {
-        System.out.println(new Product_rep_DB().get_count());
-    }
-
     public Product_rep_DB() {
         productDao = ProductDao.INSTANCE;
     }
@@ -23,12 +19,16 @@ public final class Product_rep_DB {
         return productDao.findById(id);
     }
 
+    public List<Product> findAllSortedByPrice() throws SQLException {
+        return productDao.findAllSortedByPrice();
+    }
+
     public List<ProductShort> get_k_n_short_list(int k, int n) throws SQLException {
         return productDao.get_k_n_short_list(k, n);
     }
 
-    public int add(Product product) throws SQLException {
-        return productDao.add(product);
+    public int insert(Product product) throws SQLException {
+        return productDao.insert(product);
     }
 
     public int update(Product product) throws SQLException {

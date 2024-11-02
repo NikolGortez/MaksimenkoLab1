@@ -10,7 +10,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -63,7 +63,7 @@ public final class ProductDao {
             selectRanged.setInt(1, (k - 1) * n);
             selectRanged.setInt(2, k * n);
             ResultSet resultSet = selectRanged.executeQuery();
-            List<ProductShort> products = new ArrayList<>();
+            List<ProductShort> products = new LinkedList<>();
             while (resultSet.next()) {
                 products.add(new ProductShort(resultSet.getInt("id"), resultSet.getString("name")));
             }
@@ -71,7 +71,7 @@ public final class ProductDao {
         }
     }
 
-    public int add(Product product) throws SQLException {
+    public int insert(Product product) throws SQLException {
         try (PreparedStatement insert = connection.prepareStatement("INSERT INTO product (name, description, price, stock_balance, reserve_balance) VALUES (?, ?, ?, ?, ?) RETURNING id")) {
             insert.setString(1, product.name());
             insert.setString(2, product.description());
@@ -106,6 +106,24 @@ public final class ProductDao {
         try (PreparedStatement select = connection.prepareStatement("SELECT COUNT(*) FROM product")) {
             ResultSet resultSet = select.executeQuery();
             return resultSet.next() ? resultSet.getInt(1) : -1;
+        }
+    }
+
+    public List<Product> findAllSortedByPrice() throws SQLException {
+        try (PreparedStatement select = connection.prepareStatement("SELECT * FROM product ORDER BY price")) {
+            ResultSet resultSet = select.executeQuery();
+            List<Product> products = new LinkedList<>();
+            while (resultSet.next()) {
+                products.add(new Product(
+                        resultSet.getInt("id"),
+                        resultSet.getString("name"),
+                        resultSet.getString("description"),
+                        resultSet.getDouble("price"),
+                        resultSet.getInt("stock_balance"),
+                        resultSet.getInt("reserve_balance")
+                ));
+            }
+            return List.copyOf(products);
         }
     }
 }
