@@ -20,6 +20,10 @@ public abstract class SerializableRepository implements ProductRepository {
     protected final AtomicInteger idCounter = new AtomicInteger(0);
     protected final List<Product> products = new ArrayList<>();
 
+    public List<Product> allProducts() {
+        return List.copyOf(products);
+    }
+
     public AtomicInteger idCounter() {
         return idCounter;
     }
