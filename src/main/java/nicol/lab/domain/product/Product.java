@@ -1,7 +1,10 @@
 package nicol.lab.domain.product;
 
+import org.spongepowered.configurate.objectmapping.ConfigSerializable;
+
 import java.util.Objects;
 
+@ConfigSerializable
 public record Product(
         int id,
         String name,

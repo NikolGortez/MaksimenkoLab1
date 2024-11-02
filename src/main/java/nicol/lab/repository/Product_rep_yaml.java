@@ -1,16 +1,12 @@
 package nicol.lab.repository;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 import lombok.extern.slf4j.Slf4j;
 import nicol.lab.domain.product.Product;
 import nicol.lab.domain.product.ProductShort;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -20,9 +16,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
-public final class Product_rep_json {
-    private static final Gson PRETTY_GSON = new GsonBuilder().setPrettyPrinting().create();
-
+public class Product_rep_yaml {
     private final AtomicInteger idCounter = new AtomicInteger(0);
     private final List<Product> products = new ArrayList<>();
 
@@ -32,14 +26,13 @@ public final class Product_rep_json {
 
     @SuppressWarnings("unchecked")
     public List<Product> loadNewFrom(Path pathToFile) {
-        /* сгенерировать тип, который нужно прочитать из файла */
         /* прочитать список продуктов из файла */
         /* очистить список, если ранее уже что-то в нём лежало */
         /* добавить все загруженные продукты */
         /* установить ID на самый большой из загруженного списка + 1 или оставить 0 */
         try {
-            Type type = TypeToken.getParameterized(List.class, Product.class).getType();
-            List<Product> products = PRETTY_GSON.fromJson(Files.readString(pathToFile, StandardCharsets.UTF_8), type);
+            CommentedConfigurationNode root = YamlConfigurationLoader.builder().path(pathToFile).build().load();
+            List<Product> products = root.getList(Product.class);
             this.products.clear();
             if (products != null) {
                 this.products.addAll(products);
@@ -54,7 +47,10 @@ public final class Product_rep_json {
     public boolean writeTo(Path pathToFile) {
         /* записать в файл и вернуть true/false в зависимости от успешности */
         try {
-            Files.writeString(pathToFile, PRETTY_GSON.toJson(products));
+            YamlConfigurationLoader loader = YamlConfigurationLoader.builder().path(pathToFile).build();
+            CommentedConfigurationNode root = loader.createNode();
+            root.setList(Product.class, this.products);
+            loader.save(root);
             return true;
         } catch (IOException io) {
             log.atError().setCause(io).log("Не удалось сохранить файл {}", pathToFile);
