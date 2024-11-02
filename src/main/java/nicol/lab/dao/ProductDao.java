@@ -1,7 +1,9 @@
 package nicol.lab.dao;
 
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.Accessors;
 import nicol.lab.domain.product.Product;
 import nicol.lab.domain.product.ProductShort;
 
@@ -14,6 +16,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
+@Accessors(fluent = true)
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ProductDao {
     /* Singleton почти не стоит использовать, так как он ломает тестируемость и масштабируемость кода.
@@ -33,6 +36,7 @@ public final class ProductDao {
     private final String url;
     private final String username;
 
+    @Getter
     private Connection connection;
 
     private void connect(String password) throws ClassNotFoundException, SQLException {
@@ -109,21 +113,31 @@ public final class ProductDao {
         }
     }
 
+    public List<Product> findAll() throws SQLException {
+        try (PreparedStatement select = ProductDao.INSTANCE.connection().prepareStatement("SELECT * FROM product")) {
+            return List.copyOf(selectProducts(select));
+        }
+    }
+
     public List<Product> findAllSortedByPrice() throws SQLException {
         try (PreparedStatement select = connection.prepareStatement("SELECT * FROM product ORDER BY price")) {
-            ResultSet resultSet = select.executeQuery();
-            List<Product> products = new LinkedList<>();
-            while (resultSet.next()) {
-                products.add(new Product(
-                        resultSet.getInt("id"),
-                        resultSet.getString("name"),
-                        resultSet.getString("description"),
-                        resultSet.getDouble("price"),
-                        resultSet.getInt("stock_balance"),
-                        resultSet.getInt("reserve_balance")
-                ));
-            }
-            return List.copyOf(products);
+            return List.copyOf(selectProducts(select));
         }
+    }
+
+    private List<Product> selectProducts(PreparedStatement select) throws SQLException {
+        ResultSet resultSet = select.executeQuery();
+        List<Product> products = new LinkedList<>();
+        while (resultSet.next()) {
+            products.add(new Product(
+                    resultSet.getInt("id"),
+                    resultSet.getString("name"),
+                    resultSet.getString("description"),
+                    resultSet.getDouble("price"),
+                    resultSet.getInt("stock_balance"),
+                    resultSet.getInt("reserve_balance")
+            ));
+        }
+        return products;
     }
 }
