@@ -1,5 +1,5 @@
 package voidpointer.mc.tests
 
 interface Product {
-    val id : Int
+    val id : Int?
 }

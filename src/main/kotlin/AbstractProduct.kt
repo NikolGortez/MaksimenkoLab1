@@ -12,6 +12,6 @@ abstract class AbstractProduct : Product {
     }
 
     override fun hashCode(): Int {
-        return id
+        return id!!
     }
 }

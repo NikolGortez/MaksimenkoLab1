@@ -5,12 +5,12 @@ import kotlinx.serialization.json.Json
 
 @Serializable
 data class ProductModel(
-    override val id: Int,
-    val name: String,
-    val description: String,
-    val price: Double,
-    val stockBalance: Int,
-    val reserveBalance: Int,
+    override var id: Int? = null,
+    var name: String,
+    var description: String,
+    var price: Double,
+    var stockBalance: Int,
+    var reserveBalance: Int,
 ) : AbstractProduct() {
 
     companion object {
@@ -35,7 +35,6 @@ data class ProductModel(
      */
     init {
         /* сказано убрать повтор кода - повтор кода убрала, хоть это здесь и нерационально */
-        requirePositive(id, "Id")
         requireNotBlank(name, "Name")
         requireNotBlank(description, "Description")
         require(price > 0 && price.isFinite()) { "Price must be finite and greater than zero." }
