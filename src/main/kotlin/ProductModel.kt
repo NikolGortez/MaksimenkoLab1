@@ -6,8 +6,8 @@ import kotlinx.serialization.json.Json
 @Serializable
 data class ProductModel(
     override var id: Int? = null,
-    override var name: String,
-    override var description: String,
+    var name: String,
+    var description: String,
     var price: Double,
     var stockBalance: Int,
     var reserveBalance: Int,

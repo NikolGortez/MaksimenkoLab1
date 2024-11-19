@@ -2,8 +2,6 @@ package voidpointer.mc.tests
 
 data class ProductView(
     override var id: Int? = null,
-    override var name: String,
-    override var description: String,
     var price: Double
 ) : AbstractProduct() {
 
