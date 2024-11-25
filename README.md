@@ -1,11 +1,4 @@
-# ЛР 1
-
-## Тема
-
-Онлайн-магазин.
-
-## ER модель
-
+# ER модель таблиц предметной области
 ```mermaid
 erDiagram
     user ||--o{ order : "заказывает"
@@ -32,82 +25,32 @@ erDiagram
     }
 ```
 
-### Описание таблиц
-
-1. user Пользователь:
-    - id: уникальный идентификатор
-    - first_name, middle_name, last_name: ФИО пользователя
-    - email: email адрес пользователя
-    - address: адрес пользователя
-
-2. order Заказ:
-    - id: уникальный идентификатор - primary key
-    - user_id: foreign key к id пользователя
-    - product_id: foreign key к id продукта
-
-3. product Продукт:
-    - id: уникальный идентификатор - primary key
-    - name: наименование продукта
-    - description: описание продукта
-    - price: цена продукта
-    - stockBalance: кол-во продукта на складе
-    - reserveBalance: кол-во зарезервированного продукта на складе
-
-## Выбранная сущность
-
-Выбрана независимая сущность `product` "Продукт"
-
-## Полная диаграмма классов
+# ER модель классов
 
 ```mermaid
 classDiagram
 direction BT
 class AbstractProduct {
-  + AbstractProduct() 
-  + equals(Object?) Boolean
-  + hashCode() Int
+  + AbstractProduct(int, String, double) : конструктор
+  # String name : поле name
+  # double price : поле price
+  # int id : поле id
+  + equals(Object) boolean : переопределённая проверка равенства
+  + hashCode() int : переопределённая проверка равенства по хэшу
 }
-class Companion {
-  + fromJson(String) ProductModel
+class ProductModel {
+  + ProductModel(String) : конструктор из JSON
+  + ProductModel(int, String, double, String, int, int) : конструктор
+  - String description : поле description
+  - int stockBalance : поле stockBalance
+  - int reserveBalance : поле reserveBalance
+  + toString() String : приводит к строке
 }
-class MainKt {
-  + main() Unit
-}
-class Product {
-<<Interface>>
-   Int id
-}
-class ProductModelTest {
-  + ProductModelTest() 
-  + testEquality() Unit
-  + testJson() Unit
-}
-class data  ProductModel {
-  + ProductModel(Int, String, String, Double, Int, Int) 
-  - requirePositive(Int, String) Unit
-  - requireNotBlank(String, String) Unit
-   String name
-   String description
-   Int id
-   Int stockBalance
-   Double price
-   Int reserveBalance
-}
-class data  ProductView {
-  + ProductView(Int, String, Double) 
-   String name
-   Double price
-   Int id
+class ProductView {
+  + ProductView(int, String, double) : конструктор
+  + toString() String : приводит к строке
 }
 
-AbstractProduct  ..>  Product 
-data  ProductModel  -->  Companion 
-MainKt  ..>  data  ProductModel : «создаёт»
-MainKt  ..>  data  ProductView : «создаёт»
-ProductModelTest  ..>  data  ProductModel : «создаёт»
-ProductModelTest  ..>  data  ProductView : «создаёт»
-data  ProductModel  -->  AbstractProduct 
-data  ProductModel  ..>  AbstractProduct : «создаёт»
-data  ProductView  -->  AbstractProduct 
-data  ProductView  ..>  AbstractProduct : «создаёт»
+ProductModel  -->  AbstractProduct : наследуется
+ProductView  -->  AbstractProduct : наследуется
 ```
