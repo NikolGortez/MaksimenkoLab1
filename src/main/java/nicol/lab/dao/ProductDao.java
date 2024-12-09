@@ -65,7 +65,7 @@ public final class ProductDao {
     public List<ProductShort> get_k_n_short_list(int k, int n) throws SQLException {
         try (PreparedStatement selectRanged = connection.prepareStatement("SELECT id, name FROM product WHERE id >= ? AND id < ?")) {
             selectRanged.setInt(1, (k - 1) * n);
-            selectRanged.setInt(2, k * n);
+            selectRanged.setInt(2, (k * n) - 1);
             ResultSet resultSet = selectRanged.executeQuery();
             List<ProductShort> products = new LinkedList<>();
             while (resultSet.next()) {
